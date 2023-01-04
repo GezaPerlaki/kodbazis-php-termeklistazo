@@ -20,10 +20,22 @@ $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "n
 
 $safeHandlerFunction();
 
+function compileTemplate($filePath, $params = []): string
+{
+    ob_start();
+    require $filePath;
+    return ob_get_clean();
+}
 
 function homeHandler()
 {
-    require './views/home.php';
+    //require './views/home.php';
+    $homeTemplate = compileTemplate('./views/home.php');
+
+    echo compileTemplate('./views/wrapper.php', [
+        'innerTemplate' => $homeTemplate,
+        'activeLink' => '/'
+    ]);
 }
 
 function productListHandler()
@@ -32,7 +44,17 @@ function productListHandler()
     $products = json_decode($contents, true);
     $isSuccess = isset($_GET["siker"]);
 
-    require './views/product-list.php';
+    //require './views/product-list.php';
+
+    $productListTemplate =  compileTemplate("./views/product-list.php", [
+        "products" => $products,
+        "isSuccess" => $isSuccess
+    ]);
+
+    echo compileTemplate('./views/wrapper.php', [
+        'innerTemplate' => $productListTemplate,
+        'activeLink' => '/termekek'
+    ]);
 }
 
 function createProductHandler()
