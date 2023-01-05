@@ -12,6 +12,9 @@
     <?php foreach ($params['products'] as $product) : ?>
         <h3>Név: <?php echo $product["name"] ?></h3>
         <p>Ár: <?php echo $product["price"] ?> ft</p>
+        <form action="/delete-product?id=<?php echo $product["id"] ?>" method="post">
+            <button type="submit" class="btn btn-danger">Törlés</button>
+        </form>
         <hr>
     <?php endforeach; ?>
 </div>

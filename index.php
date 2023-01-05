@@ -10,7 +10,8 @@ $routes = [
         "/termekek" => "productListHandler"
     ],
     "POST" => [
-        "/termekek" => "createProductHandler"
+        "/termekek" => "createProductHandler",
+        "/delete-product" => "deleteProductHandler"
     ]
 ];
 
@@ -19,6 +20,31 @@ $handlerFunction = $routes[$method][$path] ?? "notFoundHandler";
 $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "notFoundHandler";
 
 $safeHandlerFunction();
+
+function deleteProductHandler()
+{
+    $deletedProductId = $_GET["id"] ?? "";
+    $products = json_decode(file_get_contents("./products.json"), true);
+
+    $foundProductIndex = -1;
+
+    foreach ($products as $index => $product) {
+        if ($product["id"] === $deletedProductId) {
+            $foundProductIndex = $index;
+            break;
+        }
+    }
+
+    if ($foundProductIndex === -1) {
+        header("Location: /termekek");
+        return;
+    }
+
+    array_splice($products, $foundProductIndex, 1);
+
+    file_put_contents("./products.json", json_encode($products));
+    header("Location: /termekek");
+}
 
 function compileTemplate($filePath, $params = []): string
 {
@@ -60,6 +86,7 @@ function productListHandler()
 function createProductHandler()
 {
     $newProduct = [
+        "id" => uniqid(),
         "name" => $_POST["name"],
         "price" => (int)$_POST["price"],
     ];
