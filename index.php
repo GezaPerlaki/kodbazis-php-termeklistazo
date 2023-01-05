@@ -7,11 +7,12 @@ $path = $parsed['path'];
 $routes = [
     "GET" => [
         "/" => "homeHandler",
-        "/termekek" => "productListHandler"
+        "/termekek" => "productListHandler",
     ],
     "POST" => [
         "/termekek" => "createProductHandler",
-        "/delete-product" => "deleteProductHandler"
+        "/delete-product" => "deleteProductHandler",
+        "/update-product" => "updateProductHandler",
     ]
 ];
 
@@ -20,6 +21,36 @@ $handlerFunction = $routes[$method][$path] ?? "notFoundHandler";
 $safeHandlerFunction = function_exists($handlerFunction) ? $handlerFunction : "notFoundHandler";
 
 $safeHandlerFunction();
+
+function updateProductHandler()
+{
+    $updatedProductId = $_GET["id"] ?? "";
+    $products = json_decode(file_get_contents("./products.json"), true);
+
+    $foundProductIndex = -1;
+    foreach ($products as $index => $product) {
+        if ($product["id"] === $updatedProductId) { // Figyelem! Átmásoláskor a változót is át kell nevezni $deletedProductId-ról $updatedProductId-ra!  
+            $foundProductIndex = $index;
+            break;
+        }
+    }
+
+    if ($foundProductIndex === -1) {
+        header("Location: /termekek");
+        return;
+    }
+
+    $updatedProduct = [
+        "id" => $updatedProductId,
+        "name" => $_POST["name"],
+        "price" => (int)$_POST["price"],
+    ];
+
+    $products[$foundProductIndex] = $updatedProduct;
+
+    file_put_contents('./products.json', json_encode($products));
+    header("Location: /termekek");
+}
 
 function deleteProductHandler()
 {
@@ -74,7 +105,8 @@ function productListHandler()
 
     $productListTemplate =  compileTemplate("./views/product-list.php", [
         "products" => $products,
-        "isSuccess" => $isSuccess
+        "isSuccess" => $isSuccess,
+        "editedProductId" => $_GET["szerkesztes"] ?? ""
     ]);
 
     echo compileTemplate('./views/wrapper.php', [
