@@ -14,6 +14,7 @@ $routes = [
         "/termekek" => "createProductHandler",
         "/customers" => "createCustomerHandler",
         "/delete-product" => "deleteProductHandler",
+        "/delete-customer" => "deleteCustomerHandler",
         "/update-product" => "updateProductHandler",
         "/update-customer" => "updateCustomerHandler",
     ]
@@ -81,6 +82,31 @@ function updateCustomerHandler()
     $customers[$foundCustomerIndex] = $updatedCustomer;
 
     file_put_contents('./customers.json', json_encode($customers));
+    header("Location: /customers");
+}
+
+function deleteCustomerHandler()
+{
+    $deletedCustomerId = $_GET["id"] ?? "";
+    $customers = json_decode(file_get_contents("./customers.json"), true);
+
+    $foundCustomerIndex = -1;
+
+    foreach ($customers as $index => $customer) {
+        if ($customer["id"] === $deletedCustomerId) {
+            $foundCustomerIndex = $index;
+            break;
+        }
+    }
+
+    if ($foundCustomerIndex === -1) {
+        header("Location: /customers");
+        return;
+    }
+
+    array_splice($customers, $foundCustomerIndex, 1);
+
+    file_put_contents("./customers.json", json_encode($customers));
     header("Location: /customers");
 }
 
