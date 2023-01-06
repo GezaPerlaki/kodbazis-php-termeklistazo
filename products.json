@@ -1,1 +1,6 @@
-[{"id":"63b6fdcbdbf30","name":"Alma","price":350},{"id":"63b6fdcbdbf31","name":"K\u00f3kusz","price":420},{"id":"63b6fdcbdbf32","name":"Narancs","price":370},{"id":"63b71e7e5aa75","name":"q","price":1}]
+[
+  { "id": "63b6fdcbdbf30", "name": "Alma", "price": 350, "quantity": 1 },
+  { "id": "63b6fdcbdbf31", "name": "K\u00f3kusz", "price": 420, "quantity": 2 },
+  { "id": "63b6fdcbdbf32", "name": "Narancs", "price": 370, "quantity": 3 },
+  { "id": "63b72f986ff39", "name": "q", "price": 2, "quantity": 4 }
+]

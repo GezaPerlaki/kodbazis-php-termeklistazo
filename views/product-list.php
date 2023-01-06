@@ -12,6 +12,7 @@
     <?php foreach ($params['products'] as $product) : ?>
         <h3>Név: <?php echo $product["name"] ?></h3>
         <p>Ár: <?php echo $product["price"] ?> ft</p>
+        <p>Raktáron: <?php echo $product["quantity"] ?> db</p>
         <?php if ($params["editedProductId"] === $product["id"]) : ?>
 
             <form class="form-inline form-group" action="/update-product?id=<?php echo $product["id"] ?>" method="post">
