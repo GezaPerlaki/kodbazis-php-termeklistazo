@@ -15,6 +15,7 @@ $routes = [
         "/customers" => "createCustomerHandler",
         "/delete-product" => "deleteProductHandler",
         "/update-product" => "updateProductHandler",
+        "/update-customer" => "updateCustomerHandler",
     ]
 ];
 
@@ -52,6 +53,35 @@ function updateProductHandler()
 
     file_put_contents('./products.json', json_encode($products));
     header("Location: /termekek");
+}
+
+function updateCustomerHandler()
+{
+    $updatedCustomerID = $_GET["id"] ?? "";
+    $customers = json_decode(file_get_contents("./customers.json"), true);
+
+    $foundCustomerIndex = -1;
+    foreach ($customers as $index => $customer) {
+        if ($customer["id"] === $updatedCustomerID) { // Figyelem! Átmásoláskor a változót is át kell nevezni $deletedProductId-ról $updatedProductId-ra!  
+            $foundCustomerIndex = $index;
+            break;
+        }
+    }
+
+    if ($foundCustomerIndex === -1) {
+        header("Location: /customers");
+        return;
+    }
+
+    $updatedCustomer = [
+        "id" => $updatedCustomerID,
+        "name" => $_POST["name"],
+    ];
+
+    $customers[$foundCustomerIndex] = $updatedCustomer;
+
+    file_put_contents('./customers.json', json_encode($customers));
+    header("Location: /customers");
 }
 
 function deleteProductHandler()
@@ -102,7 +132,10 @@ function customerListHandler()
     $contents = file_get_contents('./customers.json');
     $customers = json_decode($contents, true);
 
-    $customerListTemplate =  compileTemplate("./views/customer-list.php", ["customers" => $customers]);
+    $customerListTemplate =  compileTemplate("./views/customer-list.php", [
+        "customers" => $customers,
+        "editedCustomerId" => $_GET["szerkesztes"] ?? ""
+    ]);
 
     echo compileTemplate('./views/wrapper.php', [
         'innerTemplate' => $customerListTemplate,
