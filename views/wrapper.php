@@ -18,6 +18,9 @@
             <a class="nav-item nav-link <?php echo $params['activeLink'] === "/termekek" ? "active" : "" ?>" href="/termekek">
                 Termékek
             </a>
+            <a class="nav-item nav-link <?php echo $params['activeLink'] === "/customers" ? "active" : "" ?>" href="/customers">
+                Felhasználók
+            </a>
         </div>
     </nav>
     <?php echo $params['innerTemplate'] ?>

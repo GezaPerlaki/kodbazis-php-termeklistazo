@@ -8,6 +8,7 @@ $routes = [
     "GET" => [
         "/" => "homeHandler",
         "/termekek" => "productListHandler",
+        "/customers" => "customerListHandler",
     ],
     "POST" => [
         "/termekek" => "createProductHandler",
@@ -92,6 +93,19 @@ function homeHandler()
     echo compileTemplate('./views/wrapper.php', [
         'innerTemplate' => $homeTemplate,
         'activeLink' => '/'
+    ]);
+}
+
+function customerListHandler()
+{
+    $contents = file_get_contents('./customers.json');
+    $customers = json_decode($contents, true);
+
+    $customerListTemplate =  compileTemplate("./views/customer-list.php", ["customers" => $customers]);
+
+    echo compileTemplate('./views/wrapper.php', [
+        'innerTemplate' => $customerListTemplate,
+        'activeLink' => '/customers'
     ]);
 }
 
