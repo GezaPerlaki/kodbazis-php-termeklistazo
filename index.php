@@ -12,6 +12,7 @@ $routes = [
     ],
     "POST" => [
         "/termekek" => "createProductHandler",
+        "/customers" => "createCustomerHandler",
         "/delete-product" => "deleteProductHandler",
         "/update-product" => "updateProductHandler",
     ]
@@ -127,6 +128,23 @@ function productListHandler()
         'innerTemplate' => $productListTemplate,
         'activeLink' => '/termekek'
     ]);
+}
+
+function createCustomerHandler()
+{
+    $newCustomer = [
+        "id" => uniqid(),
+        "name" => $_POST["name"]
+    ];
+    $content = file_get_contents("./customers.json");
+    $customers = json_decode($content, true);
+
+    array_push($customers, $newCustomer);
+
+    $json = json_encode($customers);
+    file_put_contents('./customers.json', $json);
+
+    header("Location: /customers");
 }
 
 function createProductHandler()
